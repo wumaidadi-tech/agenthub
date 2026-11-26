@@ -1,6 +1,6 @@
 # AgentHub
 
-把 Qoder、WorkBuddy、Claude Code、Codex、豆包 的记忆、技能、会话和 MCP 放进一个本地界面管理，解决"换一个 agent 就要重新交代一遍"的问题。
+把 Qoder、WorkBuddy、Claude Code、Codex 的记忆、技能、会话和 MCP 放进一个本地界面管理，解决"换一个 agent 就要重新交代一遍"的问题。
 
 零依赖（Node 20+，不用装 npm 包），只监听 `127.0.0.1`，写任何 agent 文件前都会备份。
 
@@ -19,7 +19,6 @@
 | WorkBuddy | `~/.workbuddy/USER.md` 标记块（可写） | `~/.workbuddy/skills` | `~/.workbuddy/projects/<项目>/<会话>.jsonl` | `~/.workbuddy/connectors/default/mcp.json`（可写） |
 | Claude Code | `~/.claude/CLAUDE.md` 标记块（可写） | `~/.claude/skills` | `~/.claude/projects/**/*.jsonl` | `~/.claude.json`（可写） |
 | Codex | `~/.codex/AGENTS.md` 标记块（可写） | — | `~/.codex/sessions/rollout-*.jsonl` | `~/.codex/config.toml`（只读） |
-| 豆包 | 无本地可写文件（只读） | — | — | — |
 
 会话一律只读，不会修改任何原始转录。
 
@@ -50,7 +49,7 @@ node server.mjs
 ## 已知限制
 
 - 目前只在 Windows 上实测过；macOS / Linux 的路径逻辑可以跑，但"打开文件夹"依赖 `explorer.exe`，需要另做适配
-- Claude Code、Codex、豆包没有安装时，对应页面会显示空数据；适配器路径是标准路径，未在本机验证的格式可能随版本变化
+- Claude Code、Codex 没有安装时，对应页面会显示空数据；适配器路径是标准路径，未在本机验证的格式可能随版本变化
 - WorkBuddy 国际版读取 `~/.workbuddy-ai/projects`
 - WorkBuddy 早期会话没有记录工作区路径时，项目列显示项目目录编码（如 `C-Users-angel-WorkBuddy-main`）
 - 首次打开会话页要解析本地转录，几百 MB 时会转几秒，之后按文件修改时间缓存
