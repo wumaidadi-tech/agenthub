@@ -32,6 +32,18 @@ node server.mjs
 
 打开 http://127.0.0.1:4173 。需要 Node.js 20 或更高版本。
 
+## 打包成 Windows exe
+
+双击即用，不需要安装 Node。构建依赖当前机器上的 Node（SEA 会复制 node.exe）：
+
+```bash
+npm install
+npm run icon       # 用 PowerShell 生成图标
+npm run build:exe  # 输出 dist/AgentHub.exe
+```
+
+exe 启动后会自动打开浏览器；如果端口已被占用，会直接打开已经在跑的实例。数据目录仍然是 `~/.agenthub`。`dist/` 不进仓库。
+
 ## 数据与环境变量
 
 - AgentHub 自己的数据（记忆卡片、技能库、备份、交接稿）默认在 `~/.agenthub`

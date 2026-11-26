@@ -6,9 +6,17 @@
   "description": "One place to manage memories, skills and sessions across AI coding agents.",
   "scripts": {
     "start": "node server.mjs",
-    "dev": "node --watch server.mjs"
+    "dev": "node --watch server.mjs",
+    "icon": "powershell -NoProfile -ExecutionPolicy Bypass -File build/make-icon.ps1",
+    "build:exe": "node build/build.mjs"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "png-to-ico": "^3.0.2",
+    "postject": "^1.0.0-alpha.6",
+    "resedit": "^3.1.1"
   }
 }

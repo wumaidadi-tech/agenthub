@@ -6,3 +6,9 @@ node_modules/
 .sandbox-payload*.json
 *.log
 .DS_Store
+dist/
+build/server.cjs
+build/agenthub.blob
+build/sea.json
+build/icon.ico
+build/icon-*.png

@@ -10,9 +10,42 @@ import { scanMcp, toggleMcp, addMcp, importMcp } from './lib/mcp.mjs';
 import { listCandidates, importCandidate } from './lib/import.mjs';
 import { readConfig, setAgentPref } from './lib/config.mjs';
 
-const ROOT = path.dirname(fileURLToPath(import.meta.url));
-const WEB = path.join(ROOT, 'web');
 const PORT = Number(process.env.PORT || 4173);
+
+function webRoot() {
+  try {
+    return path.dirname(fileURLToPath(import.meta.url));
+  } catch {
+    return process.cwd();
+  }
+}
+const WEB = path.join(webRoot(), 'web');
+
+let seaMod;
+async function seaApi() {
+  if (seaMod === undefined) {
+    try {
+      seaMod = await import('node:sea');
+    } catch {
+      seaMod = null;
+    }
+  }
+  return seaMod;
+}
+
+function openBrowser(url) {
+  try {
+    const [cmd, args] =
+      process.platform === 'win32'
+        ? ['cmd', ['/c', 'start', '', url]]
+        : process.platform === 'darwin'
+          ? ['open', [url]]
+          : ['xdg-open', [url]];
+    spawn(cmd, args, { detached: true, stdio: 'ignore' }).unref();
+  } catch {
+    /* ignore */
+  }
+}
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -159,6 +192,26 @@ function pickFolder() {
 
 async function serveStatic(req, res, pathname) {
   const rel = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
+  if (rel.includes('..')) {
+    res.writeHead(403);
+    res.end('forbidden');
+    return;
+  }
+  const sea = await seaApi();
+  if (sea?.isSea()) {
+    try {
+      const data = Buffer.from(sea.getAsset(`web/${rel}`));
+      res.writeHead(200, {
+        'content-type': MIME[path.extname(rel)] || 'application/octet-stream',
+        'cache-control': 'no-cache',
+      });
+      res.end(data);
+    } catch {
+      res.writeHead(404);
+      res.end('not found');
+    }
+    return;
+  }
   const file = path.normalize(path.join(WEB, rel));
   if (!file.startsWith(WEB)) {
     res.writeHead(403);
@@ -360,6 +413,21 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`AgentHub 已启动：http://127.0.0.1:${PORT}`);
+server.on('error', async (err) => {
+  if (err.code === 'EADDRINUSE') {
+    const url = `http://127.0.0.1:${PORT}`;
+    console.log(`端口 ${PORT} 已被占用，打开现有实例：${url}`);
+    openBrowser(url);
+    setTimeout(() => process.exit(0), 500);
+    return;
+  }
+  console.error(err);
+  process.exit(1);
+});
+
+server.listen(PORT, '127.0.0.1', async () => {
+  const url = `http://127.0.0.1:${PORT}`;
+  console.log(`AgentHub 已启动：${url}`);
+  const sea = await seaApi();
+  if (sea?.isSea() || process.env.AGENTHUB_OPEN === '1') openBrowser(url);
 });
