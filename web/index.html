@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="zh-CN" data-accent="lime">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AgentHub</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="rail">
+      <div class="rail-brand">A</div>
+      <div class="rail-list" id="rail"></div>
+      <div class="rail-foot">
+        <button class="rail-btn" type="button" id="btn-settings" title="设置" aria-label="设置">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" width="18" height="18">
+            <path d="M2.4 4.8h4M9.6 4.8h4M2.4 11.2h2.4M7.2 11.2h6.4"/>
+            <circle cx="8" cy="4.8" r="1.6"/><circle cx="5.6" cy="11.2" r="1.6"/>
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="btn back" type="button" id="btn-back" hidden>← 返回</button>
+        <div class="who" id="who"></div>
+      </header>
+
+      <div class="views" id="views">
+        <section class="canvas-wrap" id="canvas-wrap">
+          <div class="canvas">
+            <svg class="links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <line x1="50" y1="50" x2="50" y2="24"/>
+              <line x1="50" y1="50" x2="77" y2="50"/>
+              <line x1="50" y1="50" x2="50" y2="76"/>
+              <line x1="50" y1="50" x2="23" y2="50"/>
+            </svg>
+
+            <button class="node center" type="button" id="node-center"></button>
+
+            <button class="node sat n-memory" type="button" data-sec="memory">
+              <span class="n-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><ellipse cx="8" cy="4" rx="5.2" ry="2.1"/><path d="M2.8 4v8c0 1.16 2.33 2.1 5.2 2.1s5.2-.94 5.2-2.1V4"/><path d="M2.8 8c0 1.16 2.33 2.1 5.2 2.1s5.2-.94 5.2-2.1"/></svg></span>
+              <span class="n-label">记忆</span>
+              <b class="n-count" id="c-memory">0</b>
+              <span class="n-sub">SHARED</span>
+            </button>
+            <button class="node sat n-skills" type="button" data-sec="skills">
+              <span class="n-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M8 2.2 14 5.4 8 8.6 2 5.4 8 2.2Z"/><path d="M2 10.2 8 13.4l6-3.2"/></svg></span>
+              <span class="n-label">技能</span>
+              <b class="n-count" id="c-skills">0</b>
+              <span class="n-sub">SKILLS</span>
+            </button>
+            <button class="node sat n-session" type="button" data-sec="session">
+              <span class="n-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M2.6 3.4h10.8v7.2H8.2l-3.4 2.6v-2.6H2.6z"/></svg></span>
+              <span class="n-label">会话</span>
+              <b class="n-count" id="c-session">·</b>
+              <span class="n-sub">SESSIONS</span>
+            </button>
+            <button class="node sat n-mcp" type="button" data-sec="mcp">
+              <span class="n-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M5.6 2.4v3.2M10.4 2.4v3.2"/><path d="M3.6 5.6h8.8v2.9a4.4 4.4 0 0 1-8.8 0z"/><path d="M8 12.9v1.6"/></svg></span>
+              <span class="n-label">集成</span>
+              <b class="n-count" id="c-mcp">0</b>
+              <span class="n-sub">MCP</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="view" id="view-main" hidden>
+          <div id="content"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="drawer" id="drawer" hidden>
+    <div class="drawer-head">
+      <div class="drawer-title">
+        <span class="kicker">AgentHub</span>
+        <h2>设置</h2>
+      </div>
+      <button class="icon-btn" type="button" id="drawer-close" aria-label="关闭">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" width="14" height="14"><path d="M3.6 3.6l8.8 8.8M12.4 3.6l-8.8 8.8"/></svg>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-block">
+        <div class="blk-head">
+          <span class="kicker">外观</span>
+          <span class="blk-note">只影响界面，不改各 agent 的配置</span>
+        </div>
+
+        <h3 class="blk-label">强调色</h3>
+        <div class="accent-grid" id="swatches">
+          <button class="sw" type="button" data-accent="lime" style="--c:#d7ff4b" aria-label="荧光绿">
+            <span class="sw-dot"></span><span class="sw-name">荧光绿</span>
+            <span class="sw-mark"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 8.4 6.4 11.4 12.6 4.8"/></svg></span>
+          </button>
+          <button class="sw" type="button" data-accent="cyan" style="--c:#6ef0ff" aria-label="青蓝">
+            <span class="sw-dot"></span><span class="sw-name">青蓝</span>
+            <span class="sw-mark"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 8.4 6.4 11.4 12.6 4.8"/></svg></span>
+          </button>
+          <button class="sw" type="button" data-accent="amber" style="--c:#ffb84d" aria-label="琥珀">
+            <span class="sw-dot"></span><span class="sw-name">琥珀</span>
+            <span class="sw-mark"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 8.4 6.4 11.4 12.6 4.8"/></svg></span>
+          </button>
+          <button class="sw" type="button" data-accent="rose" style="--c:#ff7ab6" aria-label="玫红">
+            <span class="sw-dot"></span><span class="sw-name">玫红</span>
+            <span class="sw-mark"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 8.4 6.4 11.4 12.6 4.8"/></svg></span>
+          </button>
+        </div>
+
+        <h3 class="blk-label">显示模式</h3>
+        <div class="pillgroup seg" id="theme-opts">
+          <button class="chip" type="button" data-theme="auto">跟随系统</button>
+          <button class="chip" type="button" data-theme="light">浅色</button>
+          <button class="chip" type="button" data-theme="dark">深色</button>
+        </div>
+      </div>
+
+      <div class="drawer-block">
+        <div class="blk-head">
+          <span class="kicker">Agent</span>
+          <span class="blk-note">关掉的 agent 不参与写入</span>
+        </div>
+        <h3 class="blk-label">参与管理</h3>
+        <div id="pref-list"></div>
+      </div>
+
+      <div class="drawer-block">
+        <div class="blk-head">
+          <span class="kicker">存储</span>
+          <span class="blk-note">写入前自动备份</span>
+        </div>
+        <h3 class="blk-label">本地路径</h3>
+        <div id="paths"></div>
+      </div>
+    </div>
+  </aside>
+
+  <dialog id="dlg-new">
+    <form method="dialog" id="new-form">
+      <h2>新建记忆</h2>
+      <label class="field">
+        <span>标题</span>
+        <input name="title" required maxlength="60" placeholder="例：首选技术栈">
+      </label>
+      <label class="field">
+        <span>内容</span>
+        <textarea name="body" required rows="6" placeholder="一条事实写一条，别把几件事混在一起。"></textarea>
+      </label>
+      <label class="field">
+        <span>作用域</span>
+        <select name="scope">
+          <option value="global">全局</option>
+          <option value="project">项目</option>
+        </select>
+      </label>
+      <div class="field">
+        <span>分发给</span>
+        <div class="targets" id="new-targets"></div>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn" type="button" id="new-cancel">取消</button>
+        <button class="btn primary" type="submit">创建</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-skill">
+    <div class="skill-dialog">
+      <h2 id="sk-title">技能</h2>
+      <p class="sub" id="sk-sub"></p>
+      <div id="sk-agents" class="targets"></div>
+      <div class="dialog-actions">
+        <button class="btn" type="button" id="sk-import">收进中心库</button>
+        <button class="btn primary" type="button" id="sk-close">完成</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="dlg-handoff">
+    <div class="skill-dialog">
+      <h2>交接摘要</h2>
+      <p class="sub" id="handoff-path"></p>
+      <textarea id="handoff-text" class="handoff-text" rows="14" readonly></textarea>
+      <div class="dialog-actions">
+        <button class="btn" type="button" id="handoff-copy">复制</button>
+        <button class="btn" type="button" id="handoff-dl">下载 .md</button>
+        <button class="btn primary" type="button" id="handoff-close">关闭</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="dlg-import">
+    <div class="skill-dialog">
+      <h2>从 agent 导入记忆</h2>
+      <p class="sub">选来源，再勾要收进中心库的条目。导入后不会自动分发。</p>
+      <div class="src-pick" id="import-src"></div>
+      <div class="import-head">
+        <span>可导入的条目</span>
+        <span class="import-count" id="import-count">0 条</span>
+      </div>
+      <div id="import-list" class="import-list import-list-lg"></div>
+      <div class="dialog-actions">
+        <button class="btn" type="button" id="import-cancel">取消</button>
+        <button class="btn primary" type="button" id="import-do">导入选中</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="dlg-mcp">
+    <form id="mcp-form">
+      <h2>添加 MCP</h2>
+      <label class="field">
+        <span>写入到</span>
+        <select name="agent" id="mcp-agent"></select>
+      </label>
+      <label class="field">
+        <span>名称</span>
+        <input name="name" required maxlength="60" placeholder="例：filesystem">
+      </label>
+      <label class="field">
+        <span>类型</span>
+        <select name="transport" id="mcp-transport">
+          <option value="stdio">stdio（本地命令）</option>
+          <option value="http">远程 URL</option>
+        </select>
+      </label>
+      <label class="field">
+        <span id="mcp-target-label">命令</span>
+        <input name="target" required placeholder="npx -y @modelcontextprotocol/server-filesystem D:\work">
+      </label>
+      <p class="hint" id="mcp-hint">命令按空格拆成 command 和 args；改完会先备份原配置。</p>
+      <div class="dialog-actions">
+        <button class="btn" type="button" id="mcp-cancel">取消</button>
+        <button class="btn primary" type="submit">添加并启用</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-mcp-import">
+    <div class="skill-dialog">
+      <h2>从其它 agent 导入 MCP</h2>
+      <p class="sub">选来源，再勾要带过来的服务。同名会跳过，导入后默认启用。</p>
+      <div class="src-pick" id="mcp-src"></div>
+      <div class="import-head">
+        <span>可导入的服务</span>
+        <span class="import-count" id="mcp-import-count">0 项</span>
+      </div>
+      <div id="mcp-import-list" class="import-list import-list-lg"></div>
+      <div class="dialog-actions">
+        <button class="btn" type="button" id="mcp-import-cancel">取消</button>
+        <button class="btn primary" type="button" id="mcp-import-do">导入选中</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="dlg-skill-path">
+    <form id="skill-path-form">
+      <h2>从文件夹导入技能</h2>
+      <label class="field">
+        <span>技能文件夹（第一层要有 SKILL.md）</span>
+        <div style="display:flex;gap:8px">
+          <input name="path" required readonly placeholder="点右侧按钮选择文件夹">
+          <button class="btn" type="button" id="skill-path-pick">选择文件夹…</button>
+        </div>
+      </label>
+      <p class="hint">会复制到 ~/.agenthub/skills/&lt;文件夹名&gt;，原件不动。</p>
+      <div class="dialog-actions">
+        <button class="btn" type="button" id="skill-path-cancel">取消</button>
+        <button class="btn primary" type="submit">导入</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" aria-live="polite"></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

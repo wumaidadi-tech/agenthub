@@ -1,0 +1,8 @@
+node_modules/
+.agenthub/
+.sandbox-home/
+.shot-*.png
+.demo-*.json
+.sandbox-payload*.json
+*.log
+.DS_Store
